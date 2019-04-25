@@ -8,9 +8,14 @@ def main(args):
     ip = args.ip_address
 
     nm = nmap.PortScanner()
-    nm.scan('127.0.0.1', '22-443')
-    print(nm['127.0.0.1'])
+    nm.scan(ip, arguments='-sV -sC -p80')
 
+    if not nm.has_host(ip):
+        print("Could not find host")
+        exit(1)
+    print(nm[ip])
+    print(nm.all_hosts())
+    print(nm.scaninfo())
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(
