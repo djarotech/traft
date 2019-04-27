@@ -1,2 +1,2 @@
-pymetasploit
+pymetasploit3
 python-nmap

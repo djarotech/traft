@@ -1,7 +1,6 @@
 import argparse
 import os
-from metasploit.msfrpc import MsfRpcClient
-from metasploit.msfconsole import MsfRpcConsole
+from pymetasploit3.msfrpc import MsfRpcClient
 import nmap
 
 def main(args):
