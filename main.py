@@ -26,7 +26,23 @@ def target_nmap_scan(target):
 
     # return port_information
 
+def subnet_nmap_scan(target):
+    nm = nmap.PortScanner()
+    nm.scan(target, arguments='-sn')
+    print(nm.get_nmap_last_output())
+
+    print(nm.scaninfo())
+
 def main():
+
+    print("""
+             ______   ______     ______     ______   ______  
+	    /\__  _\ /\  == \   /\  __ \   /\  ___\ /\__  _\ 
+	    \/_/\ \/ \ \  __<   \ \  __ \  \ \  __\ \/_/\ \/ 
+	       \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_\      \ \_\ 
+	        \/_/   \/_/ /_/   \/_/\/_/   \/_/       \/_/ 
+         """)                                        
+
     parser = argparse.ArgumentParser(description='Tool for host discovery and vulnerability scanning.')
     parser.add_argument("-s", "--subnet", action="store", dest='subnet', help="range of IP addresses")
     parser.add_argument("-t", "--target", action="store", dest='target', help="target IP address")
@@ -41,6 +57,7 @@ def main():
     # Start Nmap host discovery
     elif args.subnet != None:
         print('subnet process')
+        subnet_nmap_scan(args.subnet)
     # Start port scanning target host
     elif args.target != None:
         print('target process')
