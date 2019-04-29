@@ -3,6 +3,8 @@ import os
 import sys
 from pymetasploit3.msfrpc import MsfRpcClient
 import nmap
+import json
+import xmltodict
 
 def target_nmap_scan(target):
     nm = nmap.PortScanner()
@@ -29,9 +31,15 @@ def target_nmap_scan(target):
 def subnet_nmap_scan(target):
     nm = nmap.PortScanner()
     nm.scan(target, arguments='-sn')
-    print(nm.get_nmap_last_output())
-
-    print(nm.scaninfo())
+    nmap_output = nm.get_nmap_last_output()
+    nmap_dict = xmltodict.parse(nmap_output)
+    subnet_hosts = []
+    for result in nmap_dict['nmaprun']['host']:
+      if isinstance(result['address'], list):
+        subnet_hosts.append(result['address'][0]['@addr'])
+      else:
+        subnet_hosts.append(result['address']['@addr'])
+    return subnet_hosts
 
 def main():
 
@@ -48,19 +56,16 @@ def main():
     parser.add_argument("-t", "--target", action="store", dest='target', help="target IP address")
     args = parser.parse_args()
 
-    # No inputs or flags provided
     if args.subnet == None and args.target == None:
         print('No inputs provided, please use -h for usage information.')
-    # Too many inputs
     elif args.subnet != None and args.target != None:
         print('Too many inputs provided, please use -h for usage information.')
-    # Start Nmap host discovery
     elif args.subnet != None:
-        print('subnet process')
-        subnet_nmap_scan(args.subnet)
-    # Start port scanning target host
+        print('Running Subnet Scan...\n')
+        hosts = subnet_nmap_scan(args.subnet)
+        print(hosts)
     elif args.target != None:
-        print('target process')
+        print('Running Target Scan...\n')
         target_nmap_scan(args.target)
 
 if __name__ == '__main__':
