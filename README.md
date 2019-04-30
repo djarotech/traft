@@ -5,13 +5,13 @@ Traft is an automated vulnerability detection tool which will scan the given tar
 
 ## Installation (assuming installation is on kali linux base)
 1. Install nmap if not already installed    <br />
-        - sudo apt-get install nmap        <br />
+        * sudo apt-get install nmap        <br />
 2. Clone vulscandb into /usr/share/nmap/scripts/vulscan/    <br />
-        - cd /usr/share/nmap/scripts     <br />
-        - git clone https[]()://github.com/scipag/vulscan scipag_vulscan   <br />
+        * cd /usr/share/nmap/scripts     <br />
+        * git clone https[]()://github.com/scipag/vulscan scipag_vulscan   <br />
 3. Copy vulners.nse to /usr/share/nmap/scripts/nmap-vulners/vulners.nse   <br />
-        - mkdir -p /usr/share/nmap/scripts/nmap-vulners    <br />
-        - cp vulners.nse /usr/share/nmap/scripts/nmap-vuners/vulners.nse    <br />
+        * mkdir -p /usr/share/nmap/scripts/nmap-vulners    <br />
+        * cp vulners.nse /usr/share/nmap/scripts/nmap-vuners/vulners.nse    <br />
 
 ## Running traft:
 1. Using python3     <br />
