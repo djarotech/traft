@@ -4,18 +4,18 @@ Traft is an automated vulnerability detection tool which will scan the given tar
 
 
 ## Installation (assuming installation is on kali linux base)
-1. Install nmap if not already installed 
-        - sudo apt-get install nmap
-2. Clone vulscandb into /usr/share/nmap/scripts/vulscan/
-        - cd /usr/share/nmap/scripts
-        - git clone https://github.com/scipag/vulscan scipag_vulscan
-3. Copy vulners.nse to /usr/share/nmap/scripts/nmap-vulners/vulners.nse
-        - mkdir -p /usr/share/nmap/scripts/nmap-vulners
-        - cp vulners.nse /usr/share/nmap/scripts/nmap-vuners/vulners.nse
+1. Install nmap if not already installed    <br />
+        - sudo apt-get install nmap        <br />
+2. Clone vulscandb into /usr/share/nmap/scripts/vulscan/    <br />
+        - cd /usr/share/nmap/scripts     <br />
+        - git clone https[]()://github.com/scipag/vulscan scipag_vulscan   <br />
+3. Copy vulners.nse to /usr/share/nmap/scripts/nmap-vulners/vulners.nse   <br />
+        - mkdir -p /usr/share/nmap/scripts/nmap-vulners    <br />
+        - cp vulners.nse /usr/share/nmap/scripts/nmap-vuners/vulners.nse    <br />
 
 ## Running traft:
-1. Using python3
-2. pip3 install -r requirements.txt
-3. python3 main.py -t $TARGET_IP       # to scan a single address ex. 10.0.0.2
-4. python3 main.py -s $TARGET_SUBNET   # to scan an address block ex. 10.0.0.2/24
+1. Using python3     <br />
+2. pip3 install -r requirements.txt     <br />
+3. python3 main.py -t $TARGET_IP       # to scan a single address ex. 10.0.0.2       <br />
+4. python3 main.py -s $TARGET_SUBNET   # to scan an address block ex. 10.0.0.2/24     <br />
 
