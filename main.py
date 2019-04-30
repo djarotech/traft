@@ -10,7 +10,7 @@ from pymetasploit3.msfrpc import MsfRpcClient
 def target_nmap_scan(target):
     results = []
     nm = nmap.PortScanner()
-    nm.scan(target, arguments='-sV --open --script=vulners.nse')
+    nm.scan(target, arguments='-sV --open --host-timeout 2m --script=vulners.nse')
     nmap_output = nm.get_nmap_last_output()
 
     root = ET.fromstring(nmap_output)
