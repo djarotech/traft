@@ -8,9 +8,23 @@ import xmltodict
 
 def target_nmap_scan(target):
     nm = nmap.PortScanner()
-    nm.scan(target, arguments='-sV --script=nmap-vulners,vulscan --script-args vulscandb=cve.csv')
+    nm.scan(target, arguments='-sV --open --script=nmap-vulners,vulscan --script-args vulscandb=cve.csv')
+    nmap_output = nm.get_nmap_last_output()
+    nmap_dict = xmltodict.parse(nmap_output)
+    for result in nmap_dict['nmaprun']['host']['ports']['port']:
+      if isinstance(result['service']['cpe'], list):
+        print(result['service']['cpe'][0])
+      else:
+        print(result['service']['cpe'])
 
-    print(nm.scaninfo())
+      #for thing2 in result['script']:
+      #  print(thing2['@output'])
+      #break   
+
+#print(nmap_dict['nmaprun']['host']['ports']) 
+
+
+   # print(nm.scaninfo())
 
     # # Checks if host is down
     # if nm[target].state() != 'up':
