@@ -21,7 +21,10 @@ def target_nmap_scan(target):
             temp = temp + (item[0].text).split() 
             ####print(temp)
             ####print()
-            results.append(temp)
+            if any('CVE' in string for string in temp):
+                results.append(temp)
+
+           # results.append(temp)
     ####print(results)
     return results
 
