@@ -14,31 +14,31 @@ def target_nmap_scan(target):
     
     result = []
     try:
-      for item in nmap_dict['nmaprun']['host']['ports']['port']:
-        name = ""
-        cves = []
+        for item in nmap_dict['nmaprun']['host']['ports']['port']:
+            name = ""
+            cves = []
   
-        if isinstance(item['service']['cpe'], list):
-          name = item['service']['cpe'][0]
-          ####print(item['service']['cpe'][0])
-        else:
-          name = item['service']['cpe']
-          ####print(item['service']['cpe'])
+            if isinstance(item['service']['cpe'], list):
+                name = item['service']['cpe'][0]
+                ####print(item['service']['cpe'][0])
+            else:
+                name = item['service']['cpe']
+                ####print(item['service']['cpe'])
   
-        if isinstance(item['script'], list):
-          if isinstance(item['script'][0]['elem'], str):
-            cves = item['script'][1]['@output'].split('*')
-            ####print(item['script'][1]['@output'].split('*'))
-          else:
-            cves = item['script'][0]['elem']['#text'].split('*')
-            ####print(item['script'][0]['elem']['#text'].split('*'))
-        cves = [name] + cves[1:]
-        ####print(cves)
-        ####print()
-        result.append(cves)
-      return(result)
+            if isinstance(item['script'], list):
+                if isinstance(item['script'][0]['elem'], str):
+                    cves = item['script'][1]['@output'].split('*')
+                    ####print(item['script'][1]['@output'].split('*'))
+                else:
+                    cves = item['script'][0]['elem']['#text'].split('*')
+                    ####print(item['script'][0]['elem']['#text'].split('*'))
+            cves = [name] + cves[1:]
+            ####print(cves)
+            ####print()
+            result.append(cves)
+        return(result)
     except Exception as e:
-      return None
+        return None
 
 
 
@@ -67,14 +67,13 @@ def subnet_nmap_scan(target):
     nmap_dict = xmltodict.parse(nmap_output)
     subnet_hosts = []
     for result in nmap_dict['nmaprun']['host']:
-      if isinstance(result['address'], list):
-        subnet_hosts.append(result['address'][0]['@addr'])
-      else:
-        subnet_hosts.append(result['address']['@addr'])
+        if isinstance(result['address'], list):
+            subnet_hosts.append(result['address'][0]['@addr'])
+        else:
+            subnet_hosts.append(result['address']['@addr'])
     return subnet_hosts
 
 def main():
-
     print("""
              ______   ______     ______     ______   ______  
 	    /\__  _\ /\  == \   /\  __ \   /\  ___\ /\__  _\ 
@@ -95,10 +94,22 @@ def main():
     elif args.subnet != None:
         print('Running Subnet Scan...\n')
         hosts = subnet_nmap_scan(args.subnet)
-        print("Found the following hosts: " + str(hosts))
+        print('Found the following hosts: ' + str(hosts) + '\n')
+        for host in hosts:
+            print('Running Target Scan on host ' + str(host) + '...')
+            scan_result = target_nmap_scan(host)
+            if scan_result is None:
+                print('No vulnerabilities found.\n')
+            else:
+                print(scan_result)
+                print()
     elif args.target != None:
         print('Running Target Scan...\n')
-        target_nmap_scan(args.target)
+        scan_result = target_nmap_scan(args.target)
+        if scan_result is None:
+            print('No vulnerabilities found.\n')
+        else:
+            print(scan_result)
 
 if __name__ == '__main__':
     # Ensures program runs with Python 3
