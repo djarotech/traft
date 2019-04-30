@@ -1,3 +1,2 @@
 pymetasploit3
 python-nmap
-xmltodict

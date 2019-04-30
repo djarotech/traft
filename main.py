@@ -4,42 +4,73 @@ import sys
 from pymetasploit3.msfrpc import MsfRpcClient
 import nmap
 import json
-import xmltodict
+import xml.etree.ElementTree as ET
 
 def target_nmap_scan(target):
-    nm = nmap.PortScanner()
-    nm.scan(target, arguments='-sV --open --script=nmap-vulners,vulscan --script-args vulscandb=cve.csv')
-    nmap_output = nm.get_nmap_last_output()
-    nmap_dict = xmltodict.parse(nmap_output)
-    
-    result = []
-    try:
-        for item in nmap_dict['nmaprun']['host']['ports']['port']:
-            name = ""
-            cves = []
-  
-            if isinstance(item['service']['cpe'], list):
-                name = item['service']['cpe'][0]
-                ####print(item['service']['cpe'][0])
-            else:
-                name = item['service']['cpe']
-                ####print(item['service']['cpe'])
-  
-            if isinstance(item['script'], list):
-                if isinstance(item['script'][0]['elem'], str):
-                    cves = item['script'][1]['@output'].split('*')
-                    ####print(item['script'][1]['@output'].split('*'))
-                else:
-                    cves = item['script'][0]['elem']['#text'].split('*')
-                    ####print(item['script'][0]['elem']['#text'].split('*'))
-            cves = [name] + cves[1:]
-            ####print(cves)
-            ####print()
-            result.append(cves)
-        return(result)
-    except Exception as e:
-        return None
 
+    nm = nmap.PortScanner()
+    nm.scan(target, arguments='-sV --open --script=vulners.nse')
+    nmap_output = nm.get_nmap_last_output()
+
+
+#    root = ET.fromstring(nmap_output)
+#    for item in root.findall(".//cpe"):
+#        print(item.text)
+#        print(item.tag)
+#        print(item.attrib)
+#   
+#    for item in root.iter():
+#        print(item)
+
+
+    root = ET.fromstring(nmap_output)
+    for item in root.findall(".//script"):
+        print(item[0].attrib)
+        print(item[0].text)
+        #for output in item.findall(".//output"):
+        #    print(output.attrib)
+        #    print(output.text)
+        #print(item.attrib)
+        #print(item.text)
+
+#    for item in root.findall(".//script"):
+#        for subitem in item.iter():
+#            print(subitem.attrib)
+#            print(subitem.text)
+
+
+#    nmap_dict = xmltodict.parse(nmap_output)
+#    print(nmap_dict) 
+#    
+#    result = []
+#    try:
+#        for item in nmap_dict['nmaprun']['host']['ports']['port']:
+#            name = ""
+#            cves = []
+#  
+#            if isinstance(item['service']['cpe'], list):
+#                name = item['service']['cpe'][0]
+#                print(item['service']['cpe'][0])
+#            else:
+#                name = item['service']['cpe']
+#                print(item['service']['cpe'])
+#  
+#            if isinstance(item['script'], list):
+#                if isinstance(item['script'][0]['elem'], str):
+#                    cves = item['script'][1]['@output'].split('*')
+#                    print(item['script'][1]['@output'].split('*'))
+#                else:
+#                    cves = item['script'][0]['elem']['#text'].split('*')
+#                    print(item['script'][0]['elem']['#text'].split('*'))
+#            cves = [name] + cves[1:]
+#            print(cves)
+#            print()
+#            result.append(cves)
+#        return(result)
+#    except Exception as e:
+#        print(e)
+#        return None
+#
 
 
    # print(nm.scaninfo())
