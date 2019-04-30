@@ -11,17 +11,35 @@ def target_nmap_scan(target):
     nm.scan(target, arguments='-sV --open --script=nmap-vulners,vulscan --script-args vulscandb=cve.csv')
     nmap_output = nm.get_nmap_last_output()
     nmap_dict = xmltodict.parse(nmap_output)
-    for result in nmap_dict['nmaprun']['host']['ports']['port']:
-      if isinstance(result['service']['cpe'], list):
-        print(result['service']['cpe'][0])
-      else:
-        print(result['service']['cpe'])
+    
+    result = []
+    try:
+      for item in nmap_dict['nmaprun']['host']['ports']['port']:
+        name = ""
+        cves = []
+  
+        if isinstance(item['service']['cpe'], list):
+          name = item['service']['cpe'][0]
+          ####print(item['service']['cpe'][0])
+        else:
+          name = item['service']['cpe']
+          ####print(item['service']['cpe'])
+  
+        if isinstance(item['script'], list):
+          if isinstance(item['script'][0]['elem'], str):
+            cves = item['script'][1]['@output'].split('*')
+            ####print(item['script'][1]['@output'].split('*'))
+          else:
+            cves = item['script'][0]['elem']['#text'].split('*')
+            ####print(item['script'][0]['elem']['#text'].split('*'))
+        cves = [name] + cves[1:]
+        ####print(cves)
+        ####print()
+        result.append(cves)
+      return(result)
+    except Exception as e:
+      return None
 
-      #for thing2 in result['script']:
-      #  print(thing2['@output'])
-      #break   
-
-#print(nmap_dict['nmaprun']['host']['ports']) 
 
 
    # print(nm.scaninfo())
@@ -77,7 +95,7 @@ def main():
     elif args.subnet != None:
         print('Running Subnet Scan...\n')
         hosts = subnet_nmap_scan(args.subnet)
-        print(hosts)
+        print("Found the following hosts: " + str(hosts))
     elif args.target != None:
         print('Running Target Scan...\n')
         target_nmap_scan(args.target)

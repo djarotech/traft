@@ -3,15 +3,15 @@
 Traft is an automated vulnerability detection tool which will scan the given target IP or subnet for hosts, search the hosts for running services and version numbers, and then query the CVE database to locate all known vulnerabilites associated with that service.  The user will then be able to determine the severity and necessity of upgrading their service to a patched version.
 
 
-## Installation (kali linux recommended as pre-requisite)
+## Installation (assuming installation is on kali linux base)
 1. Install nmap if not already installed 
         - sudo apt-get install nmap
 2. Clone vulscandb into /usr/share/nmap/scripts/vulscan/
         - cd /usr/share/nmap/scripts
         - git clone https://github.com/scipag/vulscan scipag_vulscan
-3. Clone nmap-vulners into /usr/share/nmap/scripts/nmap-vulners/
-        - cd /usr/share/nmap/scripts
-        - git clone https://github.com/vulnersCom/nmap-vulners.git
+3. Copy vulners.nse to /usr/share/nmap/scripts/nmap-vulners/vulners.nse
+        - mkdir -p /usr/share/nmap/scripts/nmap-vulners
+        - cp vulners.nse /usr/share/nmap/scripts/nmap-vuners/vulners.nse
 
 ## Running traft:
 1. Using python3
