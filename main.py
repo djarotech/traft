@@ -5,7 +5,32 @@ import nmap
 import json
 import xmltodict
 import xml.etree.ElementTree as ET
-from pymetasploit3.msfrpc import MsfRpcClient
+from pymetasploit3.msfrpc import *
+
+
+#client = MsfRpcClient("password", port=55553)
+
+#cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
+
+
+def call_metasploit(cve):
+
+    client = MsfRpcClient("password", port=55553)
+    cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
+
+    c = client.consoles.console(cid).write("search " + cve)
+    out = client.consoles.console(cid).read()['data']
+    timeout = 180
+    counter = 0
+    while counter < timeout:
+        out += client.consoles.console(cid).read()['data']
+        
+        if len(out) > 20:
+            break
+        time.sleep(1)
+        counter += 1
+    print(out)
+    print("GOODBYE!")
 
 def target_nmap_scan(target):
     results = []
@@ -78,6 +103,8 @@ def main():
             print('No vulnerabilities found.\n')
         else:
             print(scan_result)
+        print()
+        call_metasploit("2015-3306")
 
 if __name__ == '__main__':
     # Ensures program runs with Python 3
