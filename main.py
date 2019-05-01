@@ -5,7 +5,12 @@ import nmap
 import json
 import xmltodict
 import xml.etree.ElementTree as ET
-from pymetasploit3.msfrpc import MsfRpcClient
+from pymetasploit3.msfrpc import *
+
+client = MsfRpcClient("password")
+cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
+c = client.consoles.console(cid).write("show options")
+out = client.consoles.console(cid).read()['data']
 
 def target_nmap_scan(target):
     results = []
@@ -21,9 +26,19 @@ def target_nmap_scan(target):
             temp = temp + (item[0].text).split() 
             ####print(temp)
             ####print()
-            if any('CVE' in string for string in temp):
-                results.append(temp)
-
+            for string in temp:
+                cve = None
+                if 'CVE' in string:
+                    cve = '-'.join(string.split("-")[1:])
+                else: 
+                    continue
+                results.append(cve)
+                print("HELLO!!")
+                                
+                c = client.consoles.console(cid).write("search "+cve)
+                out = client.consoles.console(cid).read()['data']
+                print(out)
+                print("GOODBYE!")
            # results.append(temp)
     ####print(results)
     return results
