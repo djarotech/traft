@@ -6,13 +6,14 @@ import json
 import xmltodict
 import xml.etree.ElementTree as ET
 from pymetasploit3.msfrpc import *
+import time
 
-client = MsfRpcClient("password")
-cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
-c = client.consoles.console(cid).write("show options")
-out = client.consoles.console(cid).read()['data']
 
 def target_nmap_scan(target):
+    client = MsfRpcClient("password")
+    print(client.call(MsfRpcMethod.ConsoleCreate))
+    cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
+
     results = []
     nm = nmap.PortScanner()
     nm.scan(target, arguments='-sV --open --host-timeout 2m --script=vulners.nse')
@@ -23,20 +24,28 @@ def target_nmap_scan(target):
         if item[0].attrib:
             temp = []
             temp.append(item[0].attrib['key'])
-            temp = temp + (item[0].text).split() 
+            temp = temp + (item[0].text).split()
             ####print(temp)
             ####print()
             for string in temp:
                 cve = None
                 if 'CVE' in string:
                     cve = '-'.join(string.split("-")[1:])
-                else: 
+                else:
                     continue
                 results.append(cve)
-                print("HELLO!!")
-                                
+                print("*** " + cve + " ***")
+
                 c = client.consoles.console(cid).write("search "+cve)
                 out = client.consoles.console(cid).read()['data']
+                timeout = 180
+                counter = 0
+                while counter < timeout:
+                    out += client.consoles.console(cid).read()['data']
+                    if len(out) > 0:
+                        break
+                    time.sleep(1)
+                    counter += 1
                 print(out)
                 print("GOODBYE!")
            # results.append(temp)
@@ -58,12 +67,12 @@ def subnet_nmap_scan(target):
 
 def main():
     print("""
-             ______   ______     ______     ______   ______  
-	    /\__  _\ /\  == \   /\  __ \   /\  ___\ /\__  _\ 
-	    \/_/\ \/ \ \  __<   \ \  __ \  \ \  __\ \/_/\ \/ 
-	       \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_\      \ \_\ 
-	        \/_/   \/_/ /_/   \/_/\/_/   \/_/       \/_/ 
-         """)                                        
+             ______   ______     ______     ______   ______
+	    /\__  _\ /\  == \   /\  __ \   /\  ___\ /\__  _\
+	    \/_/\ \/ \ \  __<   \ \  __ \  \ \  __\ \/_/\ \/
+	       \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_\      \ \_\
+	        \/_/   \/_/ /_/   \/_/\/_/   \/_/       \/_/
+         """)
 
     parser = argparse.ArgumentParser(description='Tool for host discovery and vulnerability scanning.')
     parser.add_argument("-s", "--subnet", action="store", dest='subnet', help="range of IP addresses")
