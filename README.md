@@ -24,9 +24,9 @@ Traft is an automated vulnerability detection tool which will scan the given tar
     3. msf> <code> msfrpcd -P password -S </code>
 2. open a new terminal window
 3. To scan a single IP address, ex. 10.0.2.4:
-    <code> python3 traft.py -t <TARGET_IP> </code>
+    1. <code> python3 traft.py -t <TARGET_IP> </code>
 4. To scan an IP address block, ex. 10.0.2.0/24:
-    <code> python3 traft.py -s <TARGET SUBNET> </code>
+    1. <code> python3 traft.py -s <TARGET_SUBNET> </code>
     
 <br>
 
