@@ -13,7 +13,7 @@ Traft is an automated vulnerability detection tool which will scan the given tar
 5. <code> systemctl start postgresql </code>
 6. <code> msfdb init </code>
 7. <code> msfconsole </code>
-8. *msf > * <code> db_rebuild_cache </code>
+8. *msf >* <code> db_rebuild_cache </code>
 
 <br>
 
@@ -21,8 +21,8 @@ Traft is an automated vulnerability detection tool which will scan the given tar
 ## Running traft:
 1. open a terminal and run the following 3 commands:
     1. <code> msfconsole </code>
-    2. *msf > * <code> load msgrpc [Pass=password] </code>
-    3. *msf > * <code> msfrpcd -P password -S </code>
+    2. *msf >* <code> load msgrpc [Pass=password] </code>
+    3. *msf >* <code> msfrpcd -P password -S </code>
 2. open a new terminal window
 3. To scan a single IP address, ex. 10.0.2.4:
     1. <code> python3 traft.py -t <TARGET_IP> </code>
