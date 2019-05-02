@@ -85,7 +85,7 @@ function make_links(vulns)
 
     -- NOTE[gmedian]: exploits seem to have cvss == 0, so print them anyway
     if is_exploit or (cvss_score ~= "" and mincvss <= tonumber(cvss_score)) then
-      output_str = string.format("%s %s", output_str, vuln._source.id .. " " ..  vuln._source.id .. (is_exploit and '\t\t*EXPLOIT*' or ''))
+      output_str = string.format("%s %s", output_str, vuln._source.id .. (is_exploit and '\t\t*EXPLOIT*' or ''))
     --  output_str = string.format("%s\n\t%s", output_str, vuln._source.id .. "\t\t" .. cvss_score .. '\t\thttps://vulners.com/' .. vuln._source.type .. '/' .. vuln._source.id .. (is_exploit and '\t\t*EXPLOIT*' or ''))
     end
   end

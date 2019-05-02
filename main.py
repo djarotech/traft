@@ -6,34 +6,20 @@ import json
 import xmltodict
 import xml.etree.ElementTree as ET
 from pymetasploit3.msfrpc import *
+import time
 
+client = MsfRpcClient("password")
+cid = client.consoles.console().cid
 
-#client = MsfRpcClient("password", port=55553)
-
-#cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
-
-
-def call_metasploit(cve):
-
-    client = MsfRpcClient("password", port=55553)
-    cid = client.call(MsfRpcMethod.ConsoleCreate)['id']
-
-    c = client.consoles.console(cid).write("search " + cve)
+def query_metasploit(command):
+    global cid
+    global client
+    client.consoles.console(cid).write(command)
     out = client.consoles.console(cid).read()['data']
-    timeout = 180
-    counter = 0
-    while counter < timeout:
-        out += client.consoles.console(cid).read()['data']
-        
-        if len(out) > 20:
-            break
-        time.sleep(1)
-        counter += 1
     print(out)
-    print("GOODBYE!")
 
 def target_nmap_scan(target):
-    results = []
+    results_found = False
     nm = nmap.PortScanner()
     nm.scan(target, arguments='-sV --open --host-timeout 2m --script=vulners.nse')
     nmap_output = nm.get_nmap_last_output()
@@ -41,17 +27,67 @@ def target_nmap_scan(target):
     root = ET.fromstring(nmap_output)
     for item in root.findall(".//script"):
         if item[0].attrib:
-            temp = []
-            temp.append(item[0].attrib['key'])
-            temp = temp + (item[0].text).split() 
-            ####print(temp)
-            ####print()
-            if any('CVE' in string for string in temp):
-                results.append(temp)
+            vulners_search_results = (item[0].text).split()
+            if any('CVE' in string for string in vulners_search_results):
+                print("CVEs found for " + item[0].attrib['key'] + ":")
+                results_found = True
+                
+                msf_input_list = []
+                for string in vulners_search_results:
+                    msf_input_list.append(string[4:])
+                    print("    " + string)
+                
+                print("\nChecking MetaSploit for available exploits...\n")
 
-           # results.append(temp)
-    ####print(results)
-    return results
+                for cve in msf_input_list:
+                    c = client.consoles.console(cid).write("search " + cve)
+                    out = client.consoles.console(cid).read()['data']
+                    timeout = 180
+                    counter = 0
+                    while counter < timeout:
+                        out += client.consoles.console(cid).read()['data']
+                        if len(out) > 0:
+                            break
+                        time.sleep(1)
+                        counter += 1
+                    if len(out) > 1:
+                        print(out)
+    return(results_found) 
+  
+#
+#    ####print(results)
+#    ####return results
+#    for item in root.findall(".//script"):
+#        if item[0].attrib:
+#            temp = []
+#            temp.append(item[0].attrib['key'])
+#            temp = temp + (item[0].text).split()
+#            ####print(temp)
+#            ####print()
+#            for string in temp:
+#                cve = None
+#                if 'CVE' in string:
+#                    cve = '-'.join(string.split("-")[1:])
+#                else:
+#                    continue
+#                results.append(cve)
+#                print("*** " + cve + " ***")
+#
+#                c = client.consoles.console(cid).write("search "+cve)
+#                out = client.consoles.console(cid).read()['data']
+#                timeout = 180
+#                counter = 0
+#                while counter < timeout:
+#                    out += client.consoles.console(cid).read()['data']
+#                    if len(out) > 0:
+#                        break
+#                    time.sleep(1)
+#                    counter += 1
+#                print(out)
+#                print("GOODBYE!")
+#           # results.append(temp)
+#    ####print(results)
+#    return results
 
 def subnet_nmap_scan(target):
     nm = nmap.PortScanner()
@@ -67,12 +103,18 @@ def subnet_nmap_scan(target):
     return subnet_hosts
 
 def main():
+    global cid
+    global client
+    client.consoles.console(cid).write("db_status")
+    time.sleep(10)
     print("""
-             ______   ______     ______     ______   ______  
-	    /\__  _\ /\  == \   /\  __ \   /\  ___\ /\__  _\ 
-	    \/_/\ \/ \ \  __<   \ \  __ \  \ \  __\ \/_/\ \/ 
-	       \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_\      \ \_\ 
-	        \/_/   \/_/ /_/   \/_/\/_/   \/_/       \/_/ 
+
+       ______   ______     ______     ______   ______  
+      /\__  _\ /\  == \   /\  __ \   /\  ___\ /\__  _\ 
+      \/_/\ \/ \ \  __<   \ \  __ \  \ \  __\ \/_/\ \/ 
+         \ \_\  \ \_\ \_\  \ \_\ \_\  \ \_\      \ \_\ 
+          \/_/   \/_/ /_/   \/_/\/_/   \/_/       \/_/ 
+
          """)                                        
 
     parser = argparse.ArgumentParser(description='Tool for host discovery and vulnerability scanning.')
@@ -89,22 +131,17 @@ def main():
         hosts = subnet_nmap_scan(args.subnet)
         print('Found the following hosts: ' + str(hosts) + '\n')
         for host in hosts:
-            print('Running Target Scan on host ' + str(host) + '...')
+            print('Running Target Scan on host ' + str(host) + '...\n')
+            target_nmap_scan(host)
             scan_result = target_nmap_scan(host)
             if not scan_result:
                 print('No vulnerabilities found.\n')
-            else:
-                print(scan_result)
                 print()
     elif args.target != None:
-        print('Running Target Scan...\n')
+        print('Running Target Scan on host ' + str(args.target) + '...\n')
         scan_result = target_nmap_scan(args.target)
         if not scan_result:
             print('No vulnerabilities found.\n')
-        else:
-            print(scan_result)
-        print()
-        call_metasploit("2015-3306")
 
 if __name__ == '__main__':
     # Ensures program runs with Python 3
