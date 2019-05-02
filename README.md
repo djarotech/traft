@@ -2,19 +2,19 @@
 
 Traft is an automated vulnerability detection tool which will scan the given target IP or subnet for hosts, search the hosts for running services and version numbers, and then query the CVE database to locate all known vulnerabilites associated with that service.  The user will then be able to determine the severity and necessity of upgrading their service to a patched version.
 
+<br>
 
 ## Installation and Dependencies
-1. metasploit framework is required (already included with kali linux) 
-    <code> [metasploit](https://metasploit.help.rapid7.com/v1/docs/installing-the-metasploit-framework) </code>
-2. run ./msfconsole to complete metasploit setup
-3. postgresql will greatly increase the speed of searches (already included with kali linux)
-    <code> [postgres][(https://www.postgresql.org/docs/11/tutorial-install.html) </code>
-4. <code> pip3 install -r requirements.txt    
+1. metasploit framework and postgresql are required (already included with kali linux) 
+    1. <code> (https://metasploit.help.rapid7.com/v1/docs/installing-the-metasploit-framework) </code>
+    2. <code> (https://www.postgresql.org/docs/11/tutorial-install.html) </code>
+    3. run <code> ./msfconsole </code> to complete metasploit initial setup </code>
+4. <code> pip3 install -r requirements.txt </code>
 5. <code> msfdb init </code>
 6. <code> msfconsole </code>
-7. msf>> <code> db_rebuild_cache </code>
+7. msfconsole>> <code> db_rebuild_cache </code>
 
-![Traft Setup Video](https://github.com/somi3k/traft/blob/master/setup.gif)
+<br>
 
 
 ## Running traft:
@@ -27,6 +27,7 @@ Traft is an automated vulnerability detection tool which will scan the given tar
     <code> python3 main.py -t <TARGET_IP> </code>
 4. To scan an IP address block, ex. 10.0.2.0/24:
     <code> python3 main.py -s <TARGET SUBNET> </code>
-        
+    
+<br>
 
 ![Traft Setup Video](https://github.com/somi3k/traft/blob/master/target.gif)
