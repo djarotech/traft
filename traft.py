@@ -26,6 +26,10 @@ def query_metasploit(command):
     global cid
     global client
     client.consoles.console(cid).write(command)
+    out = client.consoles.console(cid).read()['data']
+    #print("!@$#!@#!@#$@! " + out)
+    out = client.consoles.console(cid).read()
+    #print("!@$!@#!#!@#!!#!@#!#!@#!@#$@! " + out)
 
 def target_nmap_scan(target):
 
@@ -58,9 +62,12 @@ def target_nmap_scan(target):
                 
                 print("\nChecking MetaSploit for available exploits...\n")
 
+                report.write(spacing4 + "Exploits: \n")
+
                 for cve in msf_input_list:
                     c = client.consoles.console(cid).write("search cve:" + cve)
                     out = client.consoles.console(cid).read()['data']
+                    #print("111122233333 " + out)
                     timeout = 180
                     counter = 0
                     while counter < timeout:
@@ -70,7 +77,15 @@ def target_nmap_scan(target):
                         time.sleep(1)
                         counter += 1
                     if len(out) > 1:
-                        print(out)
+                        #print(out)
+                        idx1 = out.find("exploit")
+                        idx2 = out.find(" ", idx1)
+                        
+                        #print(out[idx1:idx2])
+                        report.write(spacing8 + out[idx1:idx2] +"\n")
+                        #print("******")
+
+
     return(results_found) 
 
 def subnet_nmap_scan(target):
