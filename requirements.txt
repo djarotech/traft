@@ -1,3 +1,5 @@
 pymetasploit3
 python-nmap
 xmltodict
+boto3
+botocore
