@@ -3,7 +3,7 @@ from botocore.client import Config
 import os
 
 
-def save_to_s3(path, name, bucket=''):
+def save_to_s3(path, name, bucket='ethical_hacking471'):
     ACCESS_KEY_ID = os.environ['ACCESS_KEY_ID']
     ACCESS_SECRET_KEY = os.environ['ACCESS_SECRET_KEY']
     BUCKET_NAME = bucket

@@ -195,5 +195,3 @@ if __name__ == '__main__':
     # TODO: Maybe implement a check for python-nmap
 
     main()
-
-    report.close()
