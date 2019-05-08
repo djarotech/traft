@@ -31,7 +31,7 @@ Traft is an automated vulnerability detection tool which will scan the given tar
 
 <br>
 
-![Traft Setup Video](https://github.com/somi3k/traft/blob/master/target.gif)
+![Traft Setup Video](https://github.com/danielpygo/traft/blob/master/images/subnet.jpg)
 
 ## AWS S3 support - this is where you can send off your recon report so that it is off of a sensitive computer
 
@@ -59,6 +59,11 @@ If you are running on someone else's network or computer, make sure to unset the
 
 ## Status
 We were able to get proof of concept and got a meterpreter/shell for metasploitable3 windows VM
+
+
+![Traft Setup Video](https://github.com/danielpygo/traft/blob/master/images/windows.png)
+
+<br>
 
 ## Team (github usernames)
 somi3k
