@@ -57,7 +57,12 @@ If you are running on someone else's network or computer, make sure to unset the
 
 <br>
 
+## Status
+We were able to get proof of concept and got a meterpreter/shell for metasploitable3 windows VM
+
 ## Team (github usernames)
 somi3k
+
 smehta1215
+
 Double-N
